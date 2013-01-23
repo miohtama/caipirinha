@@ -62,10 +62,6 @@ Install::
 
     sudo port install mongdodb
 
-Start services::
-
-    mongod &
-
 Then checout::
 
     git clone
@@ -77,9 +73,13 @@ Create venv::
     . venv/bin/activate
     python setup.py develop
 
+Start system services::
+
+    mongod --dbpath data &
+
 Run web server::
 
-    paster serve development.ini
+    pserve development.ini
 
 Start bot instance::
 

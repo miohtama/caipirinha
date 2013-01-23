@@ -59,3 +59,4 @@ include/
 lib/
 local/
 virtualenv.py
+data/

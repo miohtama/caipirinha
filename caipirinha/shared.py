@@ -4,24 +4,19 @@
 
 """
 
-import pymongo
+import mongoengine
 
 
-def get_database(settings):
+def get_database_connection(settings):
     """
     """
     db_uri = settings['mongodb.url']
+    conn = mongoengine.connect(db_uri)
+    return conn
+
+
+def get_database(conn, settings):
+    """
+    """
     db_name = settings['mongodb.db_name']
-    db = settings['mongodb_conn'][db_name]
-
-    MongoDB = pymongo.Connection
-
-    if 'pyramid_debugtoolbar' in set(settings.values()):
-        class MongoDB(pymongo.Connection):
-            def __html__(self):
-                return 'MongoDB: <b>{}></b>'.format(self)
-
-    conn = MongoDB(db_uri)
-
-    return conn, db
-
+    return conn[db_name]

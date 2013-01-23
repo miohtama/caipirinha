@@ -3,21 +3,42 @@
     IRC bot instance.
 
 """
+import sys
+import logging
 import ConfigParser
 
 import irc.bot
 import irc.strings
 from irc.client import ip_numstr_to_quad, ip_quad_to_numstr
 
+from caipirinha.shared import get_database_connection
+
+
+def setup_logging():
+
+    root_logger = logging.getLogger()
+    root_logger.setLevel(logging.DEBUG)
+
+    handler = logging.StreamHandler(sys.stdout)
+    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    handler.setFormatter(formatter)
+    root_logger.addHandler(handler)
+
+setup_logging()
+
+logger = logging.getLogger("bot")
+
 
 class CaiprinhaBot(irc.bot.SingleServerIRCBot):
 
-    def __init__(self, config):
+    def __init__(self, config, db):
 
-        server = config["server"]
+        self.db = db
+        self.server = server = config["irc.servers"]
         port = 6667
-        nickname = config["nick"]
-        name = config["name"]
+        nickname = config["irc.nick"]
+        name = config["irc.name"]
+        logger.info("Connecting %s" % server)
         irc.bot.SingleServerIRCBot.__init__(self, [(server, port)], nickname, name)
 
     def on_nicknameinuse(self, c, e):
@@ -25,6 +46,7 @@ class CaiprinhaBot(irc.bot.SingleServerIRCBot):
 
     def on_welcome(self, c, e):
         #c.join(self.channel)
+        logger.info("Connected")
         pass
 
     def on_privmsg(self, c, e):
@@ -80,14 +102,24 @@ class CaiprinhaBot(irc.bot.SingleServerIRCBot):
         else:
             c.notice(nick, "Not understood: " + cmd)
 
+    def execute_internal_command(msg):
+        """
+        """
+
 
 def parse_config(file):
     """
     Read pyramid config file.
     """
+    opts = {}
     config = ConfigParser.ConfigParser()
     config.read(file)
-    return config
+
+    # PasteDeploy code was a messss......
+    for key in config.options("app:caipirinha"):
+        opts[key] = config.get("app:caipirinha", key)
+
+    return opts
 
 
 def main():
@@ -100,7 +132,10 @@ def main():
 
     config = parse_config(config_file)
 
-    bot = CaiprinhaBot(config["irc"])
+    db = get_database_connection(config)
+
+    bot = CaiprinhaBot(config, db)
+    logger.info("Starting")
     bot.start()
 
 if __name__ == "__main__":

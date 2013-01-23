@@ -3,7 +3,7 @@ from pyramid.config import Configurator
 from pyramid.events import NewRequest
 
 from caipirinha.resources import Root
-from caipirinha.shared import get_database
+from caipirinha.shared import get_database_connection, get_database
 
 
 def main(global_config, **settings):
@@ -20,11 +20,10 @@ def main(global_config, **settings):
     def add_mongo_db(event):
         settings = event.request.registry.settings
         #url = settings['mongodb.url']
-        db_name = settings['mongodb.db_name']
-        db = settings['mongodb_conn'][db_name]
-        event.request.db = db
+        conn = settings['mongodb_conn']
+        event.request.db = conn
 
-    conn, db = get_database(settings)
+    conn = get_database_connection(settings)
 
     config.registry.settings['mongodb_conn'] = conn
     config.add_subscriber(add_mongo_db, NewRequest)

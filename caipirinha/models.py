@@ -95,7 +95,7 @@ class ChannelConfiguration(Document):
     alternatives_text = StringField(required=False)
 
     #: Allow reading / searching backlogs from web
-    public_log = BoolField(required=False)
+    public_log = BooleanField(required=False)
 
     #: Custom channel triggers
     triggers = ListField(EmbeddedDocumentField(Trigger))
