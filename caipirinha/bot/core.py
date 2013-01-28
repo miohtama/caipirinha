@@ -11,8 +11,6 @@ import irc.bot
 import irc.strings
 from irc.client import ip_numstr_to_quad, ip_quad_to_numstr
 
-from caipirinha.shared import get_database_connection
-
 
 def setup_logging():
 
@@ -30,15 +28,22 @@ logger = logging.getLogger("bot")
 
 
 class CaiprinhaBot(irc.bot.SingleServerIRCBot):
+    """
+    When life gives you lemonspirit make caipirinhas.
+    """
+
+    MAX_CHANNELS = 100
 
     def __init__(self, config, db):
 
         self.db = db
+
         self.server = server = config["irc.servers"]
-        port = 6667
+        port = int(config["irc.port"])
         nickname = config["irc.nick"]
         name = config["irc.name"]
         logger.info("Connecting %s" % server)
+
         irc.bot.SingleServerIRCBot.__init__(self, [(server, port)], nickname, name)
 
     def on_nicknameinuse(self, c, e):
@@ -46,11 +51,31 @@ class CaiprinhaBot(irc.bot.SingleServerIRCBot):
 
     def on_welcome(self, c, e):
         #c.join(self.channel)
-        logger.info("Connected")
-        pass
+        logger.info("Connected to %s" % self.server)
 
     def on_privmsg(self, c, e):
         self.do_command(e, e.arguments[0])
+
+    def on_invite(self, connection, event):
+        """ Unconditionally accept all invite requets.
+
+        XXX: Set a max limit of chhanels
+
+        :param c: ?
+
+        :param e: irc.client.Event instance
+        """
+
+        channel = event.target
+
+        if len(self.channels.keys()) > self.MAX_CHANNELS:
+            msg = "Max channel amount reached, cannot join %s" % channel
+            logger.warn(msg)
+            nick = event.source.nick
+            connection.notice(nick, msg)  # Tell the user to fusk off
+            return
+
+        connection.join(event.target)
 
     def on_pubmsg(self, c, e):
         a = e.arguments[0].split(":", 1)

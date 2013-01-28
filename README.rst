@@ -85,6 +85,10 @@ Start bot instance::
 
     venv/bin/caipirinha-bot development.ini
 
+Run tests::
+
+    python -m unittest caipirinha.tests.TestAuthentication
+
 Enter IRC irc.freenode.net
 
 Create a channel
