@@ -192,14 +192,20 @@ class CaiprinhaBot(ReadyAwareIRCBot):
         """
         nick = e.source.nick
         user_channels = []
-        for name, channel in self.channels.values():
+        for name, channel in self.channels.items():
             if nick in channel.opers():
                 user_channels.append(name)
 
+        # Multiple channels confusion
         if len(user_channels) > 1 and len(args) == 0:
             c.notice(nick, "Please specify a channel from %s" % user_channels)
             return
 
+        if len(user_channels) == 0 and len(args) == 0:
+            c.notice(nick, "You must be operator on some channel")
+            return
+
+        # Read channel from the argument, or guess
         if len(args) >= 1:
             channel = args[0]
         else:

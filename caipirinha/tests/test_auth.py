@@ -1,6 +1,5 @@
 from irc.bot import Channel
 
-from caipirinha.bot.core import log_exceptions
 from .base import CaipirinhaTestCase
 
 
@@ -55,7 +54,7 @@ class TestAuth(CaipirinhaTestCase):
         self.buddy.connection.privmsg("misshelp-dev", "help")
         self.wait_for_private_notice_tag(self.buddy, "auth", "Buddy got no long help text")
 
-    def xxx_test_op_greet(self):
+    def test_op_admin(self):
         """
         Check that we generate an auth link when op greets us.
         """
@@ -63,10 +62,42 @@ class TestAuth(CaipirinhaTestCase):
         self.wait()
         self.buddy.connection.invite("misshelp-dev", "#foobar")
         self.wait_to_happen(lambda: "#foobar" in self.bot.channels, "Bot never joined on invite")
-        self.buddy.privmsg("misshelp-dev", "admin")
+        self.buddy.connection.privmsg("misshelp-dev", "admin")
+        self.wait_for_private_notice_tag(self.buddy, "http://", "Buddy got no admin URL")
 
+    def test_no_op_admin(self):
+        """
+        Don't give admin links to no users.
+        """
+        self.buddy.connection.join("#foobar")
+        self.wait()
+        self.buddy.connection.invite("misshelp-dev", "#foobar")
+        # http://docs.dal.net/docs/modes.html#2.13
+        self.wait_to_happen(lambda: "#foobar" in self.bot.channels, "Bot never joined on invite")
+        self.buddy.connection.mode("#foobar", "-o buddy")  # De-op self
+        self.wait_to_happen(lambda: "buddy" not in self.bot.channels["#foobar"].operdict, "Buddy got not de-oped")
+        self.wait_to_happen(lambda: "buddy" in self.bot.channels["#foobar"].userdict, "Buddy got not de-oped")
 
-    def xxx_test_op_greet_multiple_channels(self):
+        # Case 1: zero op channels
+        self.buddy.connection.privmsg("misshelp-dev", "admin")
+        self.wait_for_private_notice_tag(self.buddy, "oper", "Buddy did not got no oper explanation")
+
+        # Case 2: Specify a channel
+        self.buddy.connection.privmsg("misshelp-dev", "admin #foobar")
+        self.wait_for_private_notice_tag(self.buddy, "oper", "Buddy did not got no oper explanation")
+
+    def test_op_multiple_channels(self):
         """
-        Demand channel specific greet if if the same person is on multiple channels.
+        Check that we can specify the channel in the case of multiple op'ed channels.
         """
+        self.buddy.connection.join("#foobar")
+        self.buddy.connection.join("#foobar2")
+        self.buddy.connection.invite("misshelp-dev", "#foobar")
+        self.buddy.connection.invite("misshelp-dev", "#foobar2")
+        self.wait_to_happen(lambda: "#foobar" in self.bot.channels, "Bot never joined on invite")
+        self.wait_to_happen(lambda: "#foobar2" in self.bot.channels, "Bot never joined on invite")
+        self.buddy.connection.privmsg("misshelp-dev", "admin")
+        self.wait_for_private_notice_tag(self.buddy, "specify a channel", "Buddy got no channel explanation")
+        self.buddy.connection.privmsg("misshelp-dev", "admin #foobar2")
+        self.wait_for_private_notice_tag(self.buddy, "http://", "Buddy got no admin URL")
+
