@@ -69,6 +69,7 @@ class CaiprinhaBot(irc.bot.SingleServerIRCBot):
         :param e: irc.client.Event instance
         """
 
+        import ipdb ; ipdb.set_trace()
         channel = event.target
 
         if len(self.channels.keys()) > self.MAX_CHANNELS:
