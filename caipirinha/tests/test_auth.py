@@ -1,5 +1,6 @@
 from irc.bot import Channel
 
+from caipirinha.bot.core import log_exceptions
 from .base import CaipirinhaTestCase
 
 
@@ -37,3 +38,54 @@ class TestAuth(CaipirinhaTestCase):
         self.buddy.connection.invite("misshelp-dev", "#foobar")
         # Check that we are on the channel
         self.wait_to_happen(lambda: self.bot.hit_max_channels, "Max channels trigger not hit")
+
+    def test_help(self):
+        """
+        See that you get a help messages on an unknown private command.
+        """
+
+        buddy = self.buddy
+
+        @log_exceptions
+        def got_help(c, e):
+            """ privmsg mock """
+            if "help" in e.arguments[0]:
+                buddy.had_help = True
+
+        self.buddy.had_help = False
+        self.buddy.on_privnotice = got_help
+        self.buddy.connection.privmsg("misshelp-dev", "shiz0r")
+        self.wait_to_happen(lambda: self.buddy.had_help, "Buddy got no help command explanation")
+
+    def test_help_text(self):
+        """
+        See that you get a response for "help" command
+        """
+
+        buddy = self.buddy
+
+        @log_exceptions
+        def got_help(c, e):
+            """ privmsg mock """
+            if "auth" in e.arguments[0].lower():
+                buddy.had_help = True
+
+        self.buddy.had_help = False
+        self.buddy.on_privnotice = got_help
+        self.buddy.connection.privmsg("misshelp-dev", "help")
+        self.wait_to_happen(lambda: self.buddy.had_help, "Buddy got no help command explanation")
+
+    def xxx_test_op_greet(self):
+        """
+        Check that we generate an auth link when op greets us.
+        """
+        self.buddy.connection.join("#foobar")
+        self.wait()
+        self.buddy.connection.invite("misshelp-dev", "#foobar")
+        self.wait_to_happen(lambda: "#foobar" in self.bot.channels, "Bot never joined on invite")
+        self.buddy.privmsg("misshelp-dev", "admin")
+
+    def xxx_test_op_greet_multiple_channels(self):
+        """
+        Demand channel specific greet if if the same person is on multiple channels.
+        """

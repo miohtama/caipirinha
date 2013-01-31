@@ -1,0 +1,13 @@
+I am Miss Help, a friendly IRC bot helping you with your quest to the internet community.
+
+I serve at many channels. You do not have need to private message me, unless you are
+an admin of the IRC channel.
+
+Private message commands I know are
+
+* help: this message
+
+* auth: Get an admin link for a channel you are in
+
+* auth [channel]: Get an admin link for a specific IRC channel
+

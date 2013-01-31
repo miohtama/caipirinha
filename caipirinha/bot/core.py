@@ -3,6 +3,7 @@
     IRC bot instance.
 
 """
+import os
 import sys
 import logging
 import ConfigParser
@@ -12,6 +13,8 @@ from logutils.colorize import ColorizingStreamHandler
 import irc.bot
 import irc.strings
 from irc.client import ip_numstr_to_quad, ip_quad_to_numstr
+
+from caipirinha.shared import get_public_url, get_database_connection
 
 
 def setup_logging():
@@ -27,6 +30,8 @@ def setup_logging():
 setup_logging()
 
 logger = logging.getLogger("bot")
+
+LONG_HELP = open(os.path.join(os.path.dirname(__file__), "help.txt")).read()
 
 
 def log_exceptions(func):
@@ -56,17 +61,26 @@ class ReadyAwareIRCBot(irc.bot.SingleServerIRCBot):
         self.ready = False
         irc.bot.SingleServerIRCBot.__init__(self, server, nickname, name)
 
+    @log_exceptions
     def on_nomotd(self, c, e):
         """
         Server gives MOTD (or lack of it..)
         """
         self.ready = True
 
+    @log_exceptions
     def on_motd(self, c, e):
         """
         Server gives MOTD
         """
         self.ready = True
+
+    @log_exceptions
+    def on_privnotice(self, c, e):
+        """
+        Not used
+        """
+        pass
 
 
 class CaiprinhaBot(ReadyAwareIRCBot):
@@ -79,6 +93,7 @@ class CaiprinhaBot(ReadyAwareIRCBot):
     def __init__(self, config, db):
 
         self.db = db
+        self.config = config
 
         self.server = server = config["irc.servers"]
         port = int(config["irc.port"])
@@ -151,14 +166,32 @@ class CaiprinhaBot(ReadyAwareIRCBot):
                 return
             self.dcc_connect(address, port)
 
+    def give_help(self, cmd, c, e):
+        """
+        Give a hint on unknown command.
+        """
+        nick = e.source.nick
+        url = get_public_url(self.config)
+        c.notice(nick, "Command not understood: " + cmd)
+        c.notice(nick, "For help send private msg 'help'")
+        c.notice(nick, "For more information visit %s" % url)
+
+    def do_help(self, c, e):
+        """
+        Go for long help text version.
+        """
+        nick = e.source.nick
+        url = get_public_url(self.config)
+        for line in LONG_HELP.split("\n"):
+            c.notice(nick, line)
+        c.notice(nick, "For more information visit %s" % url)
+
     def do_command(self, e, cmd):
         nick = e.source.nick
         c = self.connection
 
-        if cmd == "disconnect":
-            self.disconnect()
-        elif cmd == "die":
-            self.die()
+        if cmd == "help":
+            self.do_help(c, e)
         elif cmd == "stats":
             for chname, chobj in self.channels.items():
                 c.notice(nick, "--- Channel statistics ---")
@@ -178,7 +211,7 @@ class CaiprinhaBot(ReadyAwareIRCBot):
                 ip_quad_to_numstr(dcc.localaddress),
                 dcc.localport))
         else:
-            c.notice(nick, "Not understood: " + cmd)
+            self.give_help(cmd, c, e)
 
     def execute_internal_command(msg):
         """

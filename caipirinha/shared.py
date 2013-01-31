@@ -7,6 +7,13 @@
 import mongoengine
 
 
+def get_public_url(settings):
+    """
+    Get public URL address our bot advertises.
+    """
+    return settings["caipirinha.public_url"]
+
+
 def get_database_connection(settings):
     """
     """

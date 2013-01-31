@@ -15,7 +15,8 @@ IRC_TEST_CONF = {
     "irc.servers": "localhost",
     "irc.nick": "misshelp-dev",
     "irc.name": "Help robot Miss Caipirinha",
-    "irc.port": "6667"
+    "irc.port": "6667",
+    "caipirinha.public_url": "http://www.misshelp.org"
 }
 
 # Launch command for ngircd
