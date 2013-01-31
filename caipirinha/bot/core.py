@@ -46,6 +46,9 @@ class CaiprinhaBot(irc.bot.SingleServerIRCBot):
 
         irc.bot.SingleServerIRCBot.__init__(self, [(server, port)], nickname, name)
 
+        # Expose this event for testing
+        self.hit_max_channels = False
+
     def on_nicknameinuse(self, c, e):
         c.nick(c.get_nickname() + "_")
 
@@ -69,6 +72,7 @@ class CaiprinhaBot(irc.bot.SingleServerIRCBot):
         channel = event.target
 
         if len(self.channels.keys()) > self.MAX_CHANNELS:
+            self.hit_max_channels = True
             msg = "Max channel amount reached, cannot join %s" % channel
             logger.warn(msg)
             nick = event.source.nick

@@ -1,6 +1,8 @@
 import unittest
 import threading
 import time
+import subprocess
+import os
 
 from pyramid import testing
 
@@ -11,6 +13,8 @@ from irc.bot import SingleServerIRCBot
 from irc.bot import Channel
 from irc.server import IRCServer
 from irc.server import IRCClient
+
+import caipirinha
 from caipirinha.bot.core import CaiprinhaBot
 from caipirinha.mongotestcase import TestCase as MongoTestCase
 from caipirinha.mongotestcase import MONGODB_TEST_DB_URL
@@ -22,6 +26,8 @@ IRC_TEST_CONF = {
     "irc.port": "6667"
 }
 
+# Launch command for ngircd
+NGIRCD = "/opt/local/sbin/ngircd -n -f %s"
 
 class ViewTests(unittest.TestCase):
     def setUp(self):
@@ -42,18 +48,29 @@ class ServerThread(threading.Thread):
     Non-blocking IRC test server.
     """
 
-    def __init__(self, port):
+    def __init__(self):
         threading.Thread.__init__(self)
-        self.server = IRCServer(("127.0.0.1", port), IRCClient)
+        self.daemon = True  # Don't hung on exit
+        self.running = True
+        self.pid = None
 
     def run(self):
         """ """
-        # Launch up a test IRC server
-        self.server.serve_forever()
+
+        path = os.path.dirname(caipirinha.__file__)
+        conf = os.path.join(path, "ngircd.conf")
+
+        cmdline = NGIRCD % conf
+
+        process = subprocess.Popen(cmdline.split(" "))
+
+        while self.running:
+            time.sleep(0.5)
+
+        process.terminate()
 
     def shutdown(self):
-        if self.server:
-            self.server.shutdown()
+        self.running = False
 
 
 class BotThread(threading.Thread):
@@ -63,6 +80,7 @@ class BotThread(threading.Thread):
     def __init__(self, bot, ):
         threading.Thread.__init__(self)
         self.bot = bot
+        self.daemon = True  # Don't hung on exit
 
     def run(self):
         try:
@@ -84,36 +102,49 @@ class TestAuthentication(MongoTestCase):
 
     TEST_CASE_IRC_PORT = 6667
 
+    @classmethod
+    def setUpClass(cls):
+        """
+        Start IRC server for running the tests
+        """
+        cls.server = ServerThread()
+        cls.server.start()
+
+    @classmethod
+    def tearDownClass(cls):
+        """
+        Stop ircd.
+        """
+        cls.server.shutdown()
+
     def setUp(self):
         """
         """
         MongoTestCase.setUp(self)
         self.db = mongoengine.connect("testdb", host=MONGODB_TEST_DB_URL)
 
-        TestAuthentication.TEST_CASE_IRC_PORT += 1  # Avoid socket unavailabilty error
-
-        self.server = ServerThread(TestAuthentication.TEST_CASE_IRC_PORT)
-        self.server.start()
-
-        # An IRC user sending messages
+        # An IRC user sending messages to the our bot
         self.buddy = SingleServerIRCBot([("127.0.0.1", TestAuthentication.TEST_CASE_IRC_PORT)], "buddy", "Buddy'o'pal")
         self.buddy_thread = BotThread(self.buddy)
         self.buddy_thread.start()
         time.sleep(0.5)
         self.buddy = self.buddy_thread.bot
 
-        # Our bot reacting to buddy's poking
+        # Our bot instance reacting to buddy's poking
         conf = IRC_TEST_CONF.copy()
         conf["irc.port"] = "%d" % TestAuthentication.TEST_CASE_IRC_PORT
         self.bot = CaiprinhaBot(IRC_TEST_CONF, self.db)
         self.bot_thread = BotThread(self.bot)
         self.bot_thread.start()
 
-    def wait_until_connected(self, client):
+        self.wait_to_happen(lambda: self.bot.connection.is_connected(), "Bot did not connect")
+        self.wait_to_happen(lambda: self.buddy.connection.is_connected(), "Buddy did not connect")
+
+    def wait_until_connected(self, bot):
         """
         """
-        while not client.connection.is_connected():
-            print "Waiting %s to connect" % client
+        while not bot.connection.is_connected():
+            print "Waiting %s to connect" % bot._nickname
             time.sleep(1.0)
 
     def tearDown(self):
@@ -124,14 +155,22 @@ class TestAuthentication(MongoTestCase):
 
         self.buddy_thread.disconnect()
 
-        self.server.shutdown()
-        time.sleep(0.5)
-
     def wait(self):
         """
         Wait that server propagades all messages.
         """
         time.sleep(0.5)  # Super engineering solution
+
+    def wait_to_happen(self, func, msg):
+        """
+        """
+        tick = 0.1
+        still_waiting = 5.0
+        while not func():
+            time.sleep(tick)
+            still_waiting -= tick
+            if still_waiting < 0:
+                raise AssertionError(msg)
 
     def test_invite(self):
         """
@@ -145,10 +184,12 @@ class TestAuthentication(MongoTestCase):
         self.buddy.connection.join("#foobar")
         self.wait()
         self.buddy.connection.invite("misshelp-dev", "#foobar")
-        self.wait()
+        # Check that we are on the channel
+        self.wait_to_happen(lambda: "#foobar" in self.bot.channels, "Bot never joined on invite")
 
-    def test_invite_max(self):
+    def test_invite_max_channels_reached(self):
         """
+        Don't join the channel if we hit the channel count ceiling
         """
 
         # Flood bot channels to make sure we hit the max limit
@@ -161,3 +202,4 @@ class TestAuthentication(MongoTestCase):
         self.wait()
         self.buddy.connection.invite("misshelp-dev", "#foobar")
         self.wait()
+        self.assertTrue(self.bot.hit_max_channels)

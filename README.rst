@@ -85,9 +85,6 @@ Start bot instance::
 
     venv/bin/caipirinha-bot development.ini
 
-Run tests::
-
-    python -m unittest caipirinha.tests.TestAuthentication
 
 Enter IRC irc.freenode.net
 
@@ -98,6 +95,19 @@ Invite bot::
     /invite misshelp-dev #testplace
 
 Play around.
+
+Unit tests
+-------------
+
+Unit tests need a local functional IRC server.
+
+Install ngircd::
+
+    sudo port install ngircd
+
+Run tests::
+
+    python -m unittest caipirinha.tests.TestAuthentication
 
 Architecture
 -------------
