@@ -162,14 +162,13 @@ class CaipirinhaTestCase(MongoTestCase):
         Wait to see if we get a notification of tag in the private notices.
         """
 
-        had_it = False
+        bot.had_it = False
 
         @log_exceptions
         def got_it(c, e):
             """ privmsg mock """
             if tag in e.arguments[0]:
-                had_it = True
+                bot.had_it = True
 
         bot.on_privnotice = got_it
-        self.wait_to_happen(lambda: had_it, msg)
-
+        self.wait_to_happen(lambda: bot.had_it, msg)

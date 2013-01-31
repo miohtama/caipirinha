@@ -53,7 +53,7 @@ class TestAuth(CaipirinhaTestCase):
         """
         self.buddy.had_help = False
         self.buddy.connection.privmsg("misshelp-dev", "help")
-        self.wait_for_private_notice_tag(self.buddy, "auth", "Buddy got no help command explanation")
+        self.wait_for_private_notice_tag(self.buddy, "auth", "Buddy got no long help text")
 
     def xxx_test_op_greet(self):
         """
