@@ -1,18 +1,9 @@
-import unittest
 import threading
 import time
 import subprocess
 import os
 
-from pyramid import testing
-
 import mongoengine
-
-from irc.client import Event
-
-from irc.bot import Channel
-from irc.server import IRCServer
-from irc.server import IRCClient
 
 import caipirinha
 from caipirinha.bot.core import ReadyAwareIRCBot
@@ -29,19 +20,6 @@ IRC_TEST_CONF = {
 
 # Launch command for ngircd
 NGIRCD = "/opt/local/sbin/ngircd -n -f %s"
-
-class ViewTests(unittest.TestCase):
-    def setUp(self):
-        self.config = testing.setUp()
-
-    def tearDown(self):
-        testing.tearDown()
-
-    def test_my_view(self):
-        from caipirinha.views import my_view
-        request = testing.DummyRequest()
-        info = my_view(request)
-        self.assertEqual(info['project'], 'caipirinha')
 
 
 class ServerThread(threading.Thread):
@@ -96,7 +74,7 @@ class BotThread(threading.Thread):
         self.bot.disconnect()
 
 
-class TestAuthentication(MongoTestCase):
+class CaipirinhaTestCase(MongoTestCase):
     """
     Check that the bot can join to an ongoing channel and generate auth URLs for ops.
     """
@@ -127,7 +105,7 @@ class TestAuthentication(MongoTestCase):
         self.db = mongoengine.connect("testdb", host=MONGODB_TEST_DB_URL)
 
         # An IRC user sending messages to the our bot
-        self.buddy = ReadyAwareIRCBot([("127.0.0.1", TestAuthentication.TEST_CASE_IRC_PORT)], "buddy", "Buddy'o'pal")
+        self.buddy = ReadyAwareIRCBot([("127.0.0.1", CaipirinhaTestCase.TEST_CASE_IRC_PORT)], "buddy", "Buddy'o'pal")
         self.buddy_thread = BotThread(self.buddy)
         self.buddy_thread.start()
         time.sleep(0.5)
@@ -135,7 +113,7 @@ class TestAuthentication(MongoTestCase):
 
         # Our bot instance reacting to buddy's poking
         conf = IRC_TEST_CONF.copy()
-        conf["irc.port"] = "%d" % TestAuthentication.TEST_CASE_IRC_PORT
+        conf["irc.port"] = "%d" % CaipirinhaTestCase.TEST_CASE_IRC_PORT
         self.bot = CaiprinhaBot(IRC_TEST_CONF, self.db)
         self.bot_thread = BotThread(self.bot)
         self.bot_thread.start()
@@ -176,32 +154,4 @@ class TestAuthentication(MongoTestCase):
             if still_waiting < 0:
                 raise AssertionError(msg)
 
-    def test_invite(self):
-        """
-        Check that the bot can be invited to a channel.
-        """
 
-        # Generate invite event
-        # self.bot._dispatcher(None, Event("invite", 'moo-_-!miohtama@lakka.kapsi.fi', "#foobar"))
-
-        self.buddy.connection.join("#foobar")
-        self.wait()
-        self.buddy.connection.invite("misshelp-dev", "#foobar")
-        # Check that we are on the channel
-        self.wait_to_happen(lambda: "#foobar" in self.bot.channels, "Bot never joined on invite")
-
-    def test_invite_max_channels_reached(self):
-        """
-        Don't join the channel if we hit the channel count ceiling
-        """
-
-        # Flood bot channels to make sure we hit the max limit
-        for i in range(0, 100):
-            name = "#chan%d" % i
-            self.bot.channels[name] = Channel()
-
-        self.buddy.connection.join("#foobar")
-        self.wait()
-        self.buddy.connection.invite("misshelp-dev", "#foobar")
-        # Check that we are on the channel
-        self.wait_to_happen(lambda: self.bot.hit_max_channels, "Max channels trigger not hit")
