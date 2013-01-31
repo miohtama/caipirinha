@@ -113,16 +113,14 @@ class CaiprinhaBot(ReadyAwareIRCBot):
 
         Have internal limit to prevent DoSing the bot.
 
-        :param c: ?
+        :param c: irc.connection.Connection instance
 
         :param e: irc.client.Event instance
         """
 
         channel = event.arguments[0]
 
-        print "God %d" % len(self.channel.keys())
-
-        if len(self.channels.keys()) > self.MAX_CHANNELS:
+        if len(self.channels.keys()) >= self.MAX_CHANNELS:
             self.hit_max_channels = True
             msg = "Max channel amount reached, cannot join %s" % channel
             logger.warn(msg)

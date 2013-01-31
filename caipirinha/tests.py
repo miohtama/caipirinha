@@ -108,8 +108,10 @@ class TestAuthentication(MongoTestCase):
         """
         Start IRC server for running the tests
         """
+        os.system("killall ngircd")
         cls.server = ServerThread()
         cls.server.start()
+        time.sleep(1.5)  # Let server wake up
 
     @classmethod
     def tearDownClass(cls):
@@ -164,9 +166,10 @@ class TestAuthentication(MongoTestCase):
 
     def wait_to_happen(self, func, msg):
         """
+        Async assertation which waits a certain timeout before bailing out.
         """
         tick = 0.1
-        still_waiting = 9.0
+        still_waiting = 5
         while not func():
             time.sleep(tick)
             still_waiting -= tick
