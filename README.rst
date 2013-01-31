@@ -1,4 +1,4 @@
-Miss Caipirinha is an IRC help bot as software as a service. It is designed to be an infrastructure tool for open source communities to make community support discussion (help chat in IRC) more streamlined by
+Miss Caipirinha is an IRC help bot provided as a hosted service. It is designed to be an infrastructure tool for open source communities to make community support discussion (help chat in IRC) more streamlined by
 educating people about internet etique, good ways to ask a question and alternative forums to search help.
 
 I wrote this bot because after 10 years of answering the same questions all over again I think the world needs something better.
@@ -101,13 +101,17 @@ Unit tests
 
 Unit tests need a local functional IRC server.
 
-Install ngircd::
+Install ngircd, needed to run tests::
 
     sudo port install ngircd
 
-Run tests::
+Run one test::
 
     python -m unittest caipirinha.tests.TestAuthentication
+
+Run all tests::
+
+    python -m unittest discover
 
 Architecture
 -------------
