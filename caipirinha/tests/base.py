@@ -8,6 +8,8 @@ import mongoengine
 import caipirinha
 from caipirinha.bot.core import ReadyAwareIRCBot
 from caipirinha.bot.core import CaiprinhaBot
+from caipirinha.bot.core import log_exceptions
+
 from caipirinha.mongotestcase import TestCase as MongoTestCase
 from caipirinha.mongotestcase import MONGODB_TEST_DB_URL
 
@@ -155,4 +157,19 @@ class CaipirinhaTestCase(MongoTestCase):
             if still_waiting < 0:
                 raise AssertionError(msg)
 
+    def wait_for_private_notice_tag(self, bot, tag, msg):
+        """
+        Wait to see if we get a notification of tag in the private notices.
+        """
+
+        had_it = False
+
+        @log_exceptions
+        def got_it(c, e):
+            """ privmsg mock """
+            if tag in e.arguments[0]:
+                had_it = True
+
+        bot.on_privnotice = got_it
+        self.wait_to_happen(lambda: had_it, msg)
 

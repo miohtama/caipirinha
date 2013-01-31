@@ -186,12 +186,45 @@ class CaiprinhaBot(ReadyAwareIRCBot):
             c.notice(nick, line)
         c.notice(nick, "For more information visit %s" % url)
 
-    def do_command(self, e, cmd):
+    def do_admin(self, c, e, args):
+        """
+        Handle admin command.
+        """
+        nick = e.source.nick
+        user_channels = []
+        for name, channel in self.channels.values():
+            if nick in channel.opers():
+                user_channels.append(name)
+
+        if len(user_channels) > 1 and len(args) == 0:
+            c.notice(nick, "Please specify a channel from %s" % user_channels)
+            return
+
+        if len(args) >= 1:
+            channel = args[0]
+        else:
+            channel = user_channels[0]
+
+        if channel not in user_channels:
+            c.notice(nick, "You must be operator on %s" % channel)
+            return
+
+        admin_link = "http://"
+
+        c.notice(nick, "To manage %s settings go to %s" % (channel, admin_link))
+
+    def do_command(self, e, line):
         nick = e.source.nick
         c = self.connection
 
+        args = line.split()
+        cmd = args[0]
+        args = args[1:]
+
         if cmd == "help":
             self.do_help(c, e)
+        elif cmd == "admin":
+            self.do_admin(c, e, args)
         elif cmd == "stats":
             for chname, chobj in self.channels.items():
                 c.notice(nick, "--- Channel statistics ---")
