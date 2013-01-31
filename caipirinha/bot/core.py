@@ -121,7 +121,6 @@ class CaiprinhaBot(ReadyAwareIRCBot):
         channel = event.arguments[0]
 
         print "God %d" % len(self.channel.keys())
-        import ipdb ; ipdb.set_trace()
 
         if len(self.channels.keys()) > self.MAX_CHANNELS:
             self.hit_max_channels = True
