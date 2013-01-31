@@ -9,12 +9,13 @@ from pyramid import testing
 import mongoengine
 
 from irc.client import Event
-from irc.bot import SingleServerIRCBot
+
 from irc.bot import Channel
 from irc.server import IRCServer
 from irc.server import IRCClient
 
 import caipirinha
+from caipirinha.bot.core import ReadyAwareIRCBot
 from caipirinha.bot.core import CaiprinhaBot
 from caipirinha.mongotestcase import TestCase as MongoTestCase
 from caipirinha.mongotestcase import MONGODB_TEST_DB_URL
@@ -50,7 +51,7 @@ class ServerThread(threading.Thread):
 
     def __init__(self):
         threading.Thread.__init__(self)
-        self.daemon = True  # Don't hung on exit
+        self.daemon = False  # Don't hung on exit
         self.running = True
         self.pid = None
 
@@ -124,7 +125,7 @@ class TestAuthentication(MongoTestCase):
         self.db = mongoengine.connect("testdb", host=MONGODB_TEST_DB_URL)
 
         # An IRC user sending messages to the our bot
-        self.buddy = SingleServerIRCBot([("127.0.0.1", TestAuthentication.TEST_CASE_IRC_PORT)], "buddy", "Buddy'o'pal")
+        self.buddy = ReadyAwareIRCBot([("127.0.0.1", TestAuthentication.TEST_CASE_IRC_PORT)], "buddy", "Buddy'o'pal")
         self.buddy_thread = BotThread(self.buddy)
         self.buddy_thread.start()
         time.sleep(0.5)
@@ -137,8 +138,8 @@ class TestAuthentication(MongoTestCase):
         self.bot_thread = BotThread(self.bot)
         self.bot_thread.start()
 
-        self.wait_to_happen(lambda: self.bot.connection.is_connected(), "Bot did not connect")
-        self.wait_to_happen(lambda: self.buddy.connection.is_connected(), "Buddy did not connect")
+        self.wait_to_happen(lambda: self.bot.ready, "Bot did not connect")
+        self.wait_to_happen(lambda: self.buddy.ready, "Buddy did not connect")
 
     def wait_until_connected(self, bot):
         """
@@ -165,7 +166,7 @@ class TestAuthentication(MongoTestCase):
         """
         """
         tick = 0.1
-        still_waiting = 5.0
+        still_waiting = 9.0
         while not func():
             time.sleep(tick)
             still_waiting -= tick
@@ -180,7 +181,6 @@ class TestAuthentication(MongoTestCase):
         # Generate invite event
         # self.bot._dispatcher(None, Event("invite", 'moo-_-!miohtama@lakka.kapsi.fi', "#foobar"))
 
-        self.wait_until_connected(self.buddy)  # Wait buddy to connect
         self.buddy.connection.join("#foobar")
         self.wait()
         self.buddy.connection.invite("misshelp-dev", "#foobar")
@@ -197,9 +197,8 @@ class TestAuthentication(MongoTestCase):
             name = "#chan%d" % i
             self.bot.channels[name] = Channel()
 
-        self.wait_until_connected(self.buddy)  # Wait buddy to connect
         self.buddy.connection.join("#foobar")
         self.wait()
         self.buddy.connection.invite("misshelp-dev", "#foobar")
-        self.wait()
-        self.assertTrue(self.bot.hit_max_channels)
+        # Check that we are on the channel
+        self.wait_to_happen(lambda: self.bot.hit_max_channels, "Max channels trigger not hit")

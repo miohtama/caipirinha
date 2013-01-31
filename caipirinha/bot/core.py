@@ -7,6 +7,8 @@ import sys
 import logging
 import ConfigParser
 
+from logutils.colorize import ColorizingStreamHandler
+
 import irc.bot
 import irc.strings
 from irc.client import ip_numstr_to_quad, ip_quad_to_numstr
@@ -17,7 +19,7 @@ def setup_logging():
     root_logger = logging.getLogger()
     root_logger.setLevel(logging.DEBUG)
 
-    handler = logging.StreamHandler(sys.stdout)
+    handler = ColorizingStreamHandler(sys.stdout)
     formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
     handler.setFormatter(formatter)
     root_logger.addHandler(handler)
@@ -27,7 +29,47 @@ setup_logging()
 logger = logging.getLogger("bot")
 
 
-class CaiprinhaBot(irc.bot.SingleServerIRCBot):
+def log_exceptions(func):
+    """
+    Decorator to log exceptinon from the resulting function.
+
+    Because irc lib might not handle these cases in sane way.
+    """
+
+    def inner(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception, e:
+            logger.error(e)
+            logger.exception(e)
+            raise
+
+    return inner
+
+
+class ReadyAwareIRCBot(irc.bot.SingleServerIRCBot):
+    """
+    Let's not mess with server until we can.
+    """
+
+    def __init__(self, server, nickname, name):
+        self.ready = False
+        irc.bot.SingleServerIRCBot.__init__(self, server, nickname, name)
+
+    def on_nomotd(self, c, e):
+        """
+        Server gives MOTD (or lack of it..)
+        """
+        self.ready = True
+
+    def on_motd(self, c, e):
+        """
+        Server gives MOTD
+        """
+        self.ready = True
+
+
+class CaiprinhaBot(ReadyAwareIRCBot):
     """
     When life gives you lemonspirit make caipirinhas.
     """
@@ -44,33 +86,42 @@ class CaiprinhaBot(irc.bot.SingleServerIRCBot):
         name = config["irc.name"]
         logger.info("Connecting %s" % server)
 
-        irc.bot.SingleServerIRCBot.__init__(self, [(server, port)], nickname, name)
+        ReadyAwareIRCBot.__init__(self, [(server, port)], nickname, name)
 
         # Expose this event for testing
         self.hit_max_channels = False
 
+        # When we are ready to play with the server
+        self.ready = False
+
+    @log_exceptions
     def on_nicknameinuse(self, c, e):
         c.nick(c.get_nickname() + "_")
 
+    @log_exceptions
     def on_welcome(self, c, e):
         #c.join(self.channel)
         logger.info("Connected to %s" % self.server)
 
+    @log_exceptions
     def on_privmsg(self, c, e):
         self.do_command(e, e.arguments[0])
 
+    @log_exceptions
     def on_invite(self, connection, event):
         """ Unconditionally accept all invite requets.
 
-        XXX: Set a max limit of chhanels
+        Have internal limit to prevent DoSing the bot.
 
         :param c: ?
 
         :param e: irc.client.Event instance
         """
 
+        channel = event.arguments[0]
+
+        print "God %d" % len(self.channel.keys())
         import ipdb ; ipdb.set_trace()
-        channel = event.target
 
         if len(self.channels.keys()) > self.MAX_CHANNELS:
             self.hit_max_channels = True
@@ -80,7 +131,7 @@ class CaiprinhaBot(irc.bot.SingleServerIRCBot):
             connection.notice(nick, msg)  # Tell the user to fusk off
             return
 
-        connection.join(event.target)
+        connection.join(channel)
 
     def on_pubmsg(self, c, e):
         a = e.arguments[0].split(":", 1)
