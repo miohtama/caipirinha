@@ -107,7 +107,7 @@ Install ngircd, needed to run tests::
 
 Run one test::
 
-    python -m unittest caipirinha.tests.TestAuthentication
+    python -m unittest caipirinha.tests
 
 Run all tests::
 
