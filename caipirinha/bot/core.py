@@ -8,13 +8,12 @@ import sys
 import logging
 import ConfigParser
 
-from logutils.colorize import ColorizingStreamHandler
-
 import irc.bot
 import irc.strings
 from irc.client import ip_numstr_to_quad, ip_quad_to_numstr
 
 from caipirinha.shared import get_public_url, get_database_connection
+from caipirinha.log import RainbowLoggingHandler
 
 
 def setup_logging():
@@ -22,7 +21,8 @@ def setup_logging():
     root_logger = logging.getLogger()
     root_logger.setLevel(logging.DEBUG)
 
-    handler = ColorizingStreamHandler(sys.stdout)
+    handler = RainbowLoggingHandler(sys.stdout)
+    handler.show_name = False
     formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
     handler.setFormatter(formatter)
     root_logger.addHandler(handler)
