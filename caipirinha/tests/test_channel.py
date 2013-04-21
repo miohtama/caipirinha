@@ -27,9 +27,9 @@ class TestChannelManager(unittest.TestCase):
         """ We scan data files correctly """
 
         # We have two valid channels in test data
-        self.assertEqual(2, len(self.manager.get_channels().keys()))
-
         channels = self.manager.scan()
+        self.assertEqual(2, len(channels.keys()))
+
         self.assertTrue(make_channel_spec_string("freenode", "#caipirinha-test") in channels)
         self.assertTrue(make_channel_spec_string("freenode", "#caipirinha.test2") in channels)
 
@@ -38,7 +38,7 @@ class TestChannelManager(unittest.TestCase):
         """
 
         existing_channel = make_channel_spec_string("freenode", "#caipirinha-test")
-        deleted_channel = make_channel_spec_string("freenode", "#caipirinha.test.2")
+        deleted_channel = make_channel_spec_string("freenode", "#caipirinha.test2")
         added_channel = make_channel_spec_string("freenode", "#caipirinha.test.3")
 
         old_data = self.manager.scan()

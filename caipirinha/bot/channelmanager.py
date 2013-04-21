@@ -84,11 +84,12 @@ class ChannelManager(object):
         """
 
         # See which channels disappear
-        for spec in new_channels.keys():
-            if not spec in old_channels:
+        for spec in old_channels.keys():
+            if not spec in new_channels:
                 delete_callback(spec)
                 del old_channels[spec]
 
-        for spec in old_channels.keys():
+        # See which are new channels
+        for spec in new_channels.keys():
             if not spec in new_channels:
-                add_callback(spec)
+                delete_callback(spec)
