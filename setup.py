@@ -32,7 +32,7 @@ setup(name='caipirinha',
       main = caipirinha:main
 
       [console_scripts]
-      caipirinha-bot = caipirinha.bot.main:main
+      caipirinha-bot = caipirinha.bot.core:main
       """,
       paster_plugins=['pyramid'],
       )

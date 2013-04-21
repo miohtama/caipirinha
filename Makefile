@@ -9,12 +9,12 @@ DEVELOPMENT_BOT=venv/bin/caipirinha-bot development.ini
 start-development-bot:
 	$(MONGO) &
 	$(NIRCD) &
-	$(DEVELOPMENT_BOT) &
+	$(DEVELOPMENT_BOT)
 
 stop-development-bot:
 	killall ngircd
 	killall mongod
-	killall caipirinha-bot
+	pkill -f caipirinha-bot
 
 irssi:
 	irssi --connect=127.0.0.1 --nick=buddy --home=`pwd`/scripts/irssi

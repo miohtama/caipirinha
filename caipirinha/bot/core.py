@@ -135,8 +135,20 @@ class CaiprinhaBot(ReadyAwareIRCBot):
         logger.info("Connecting %s" % server)
         ReadyAwareIRCBot.__init__(self, [(server, port)], nickname, name)
 
+        self.connection.add_global_handler("welcome", self.on_welcome)
+
         # Expose this event for testing
         self.hit_max_channels = False
+
+    def startup(self, c, e):
+        #c.join(self.channel)
+        logger.info("Connected to %s" % self.server)
+
+        # Join all channels we have greeting message set
+        network = get_network_from_server(self.server)
+        channels = self.channel_manager.get_network_channels(self.channel_greeting_info, network)
+        for channel in channels:
+            c.join(channel)
 
     @log_exceptions
     def on_nicknameinuse(self, c, e):
@@ -147,14 +159,7 @@ class CaiprinhaBot(ReadyAwareIRCBot):
         """
         :param c: Connection
         """
-        #c.join(self.channel)
-        logger.info("Connected to %s" % self.server)
-
-        # Join all channels we have greeting message set
-        network = get_network_from_server(self.server)
-        channels = self.channel_manager.get_network_channels(self.channel_greeting_info, network)
-        for channel in channels:
-            c.join(channel)
+        self.startup(c, e)
 
     @log_exceptions
     def on_privmsg(self, c, e):
@@ -197,18 +202,6 @@ class CaiprinhaBot(ReadyAwareIRCBot):
         """
         self.do_greeting(c, e)
 
-    def on_dccchat(self, c, e):
-        if len(e.arguments) != 2:
-            return
-        args = e.arguments[1].split()
-        if len(args) == 4:
-            try:
-                address = ip_numstr_to_quad(args[2])
-                port = int(args[3])
-            except ValueError:
-                return
-            self.dcc_connect(address, port)
-
     def give_help(self, cmd, c, e):
         """
         Give a hint on unknown command.
@@ -227,7 +220,7 @@ class CaiprinhaBot(ReadyAwareIRCBot):
 
         # Don't greet ourselves
         nick, hostmak = who.split("!")
-        if nick == self.nickname:
+        if nick == c.real_nickname:
             return
 
         network = get_network_from_server(self.server)
@@ -352,11 +345,12 @@ def main():
 
     db = get_database_connection(config)
 
+    # Load initial greeting messages
     channel_path = get_nice_config_path(config["caipirinha.channel_data_path"])
     channel_manager = ChannelManager(get_nice_config_path(channel_path))
     channel_manager.scan()
 
-    bot = CaiprinhaBot(config, db)
+    bot = CaiprinhaBot(config, db, channel_manager)
     logger.info("Starting")
     bot.start()
 

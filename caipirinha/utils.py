@@ -29,5 +29,5 @@ def get_nice_config_path(path):
     """
     if path.startswith("/"):  # No windows
         return path
-    return os.path.join(os.gecwd(), path)
+    return os.path.join(os.getcwd(), path)
 

@@ -1,0 +1,2 @@
+Welcome to #caipirinha - questions.io IRC bot development channel.
+Please feel free to ask anything about the bot from developers.

@@ -143,7 +143,7 @@ class CaipirinhaTestCase(MongoTestCase):
 
         logger.info("Waiting buddy to connect")
         self.wait_to_happen(lambda: self.buddy.ready, "Buddy did not connect")
-        logger.info("Connected")
+        logger.info("Buddy connected")
 
     def wait_until_connected(self, bot):
         """

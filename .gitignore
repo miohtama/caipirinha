@@ -47,12 +47,11 @@ docs/build/*
 *.debug.css
 *.db
 *.jar
+*.pid
+
 .vvv
 venv*
 __pycache__
-
-tests/test-installation-environment
-
 bin/
 distribute-*.tar.gz
 include/
