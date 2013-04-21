@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.rst')).read()
 
-requires = ['pyramid', 'WebError', 'pymongo', 'mongoengine', 'irc', 'pyzmq', 'pyramid_webassets', 'ipdb', 'logutils']
+requires = ['pyramid', 'WebError', 'pymongo', 'mongoengine', 'irc', 'pyzmq', 'pyramid_webassets', 'ipdb', 'logutils', 'pelican']
 
 setup(name='caipirinha',
       version='0.0',

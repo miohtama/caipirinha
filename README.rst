@@ -132,11 +132,13 @@ Architecture
 
 The service consists of
 
-* Web UI (Pyramid + Bootstrap + MongoDB)
+* Questions.io website built using a static site generator `Pelican <http://docs.getpelican.com/>`_, hosted on Github
 
-* Bot implementation (irclib)
+* Channel greeting messages are managed through Github web inline edit interface through Github forks
 
-Web UI and bot exchange data over MongoDB.
+* UNIX cron scripts notifies the bot when the channel messages change
+
+* The bot is implemented using Python, irclib and it keeps its state in MongoDB
 
 Initially run only one bot instance. Later scale with one bot per one process managing which IRC channel affinity.
 
@@ -144,3 +146,7 @@ Links
 -------
 
 * http://royal.pingdom.com/2012/04/24/irc-is-dead-long-live-irc/
+
+* http://martinbrochhaus.com/2012/02/pelican.html
+
+* `Pelican theme inspiration <https://github.com/getpelican/pelican-themes/tree/master/bootstrap2/templates>`_
