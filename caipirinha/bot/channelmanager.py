@@ -21,9 +21,6 @@ class ChannelManager(object):
         """
         self.folder = folder
 
-        #: Map of (network, channel) -> Greetingtext tuples
-        self.channels = {}
-
     def get_channel_spec(self, f):
         """ Extract channel network + name
 
@@ -49,16 +46,15 @@ class ChannelManager(object):
 
         return (network, name)
 
-    def get_channels(self):
-        """ Return mappings (mutable copy)
-        """
-        return self.channels.copy()
-
     def scan(self):
         """ Toggle channel data rescan.
+
+        :return: Dict of scanned greet messages
         """
 
         files = os.listdir(self.folder)
+
+        channels = {}
 
         if len(files) == 0:
             raise RuntimeError("No channel data in folder %s" % self.folder)
@@ -79,7 +75,20 @@ class ChannelManager(object):
                 logger.exception(e)
 
             key = make_channel_spec_string(network, name)
-            self.channels[key] = content
+            channels[key] = content
 
+        return channels
 
+    def reload(self, new_channels, old_channels, add_callback, delete_callback):
+        """ Instiate new channel data.
+        """
 
+        # See which channels disappear
+        for spec in new_channels.keys():
+            if not spec in old_channels:
+                delete_callback(spec)
+                del old_channels[spec]
+
+        for spec in old_channels.keys():
+            if not spec in new_channels:
+                add_callback(spec)
