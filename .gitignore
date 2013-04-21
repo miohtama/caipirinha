@@ -40,7 +40,7 @@ jsdoc*
 releases
 
 .DS_Store
-docs/build/*
+docs/output/*
 
 *.min.js
 *.min.css
