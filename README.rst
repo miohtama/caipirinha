@@ -58,7 +58,8 @@ You need to be a channel operator.
 Development
 -------------
 
-Install::
+Installation
++++++++++++++++
 
     sudo port install mongdodb
 
@@ -72,6 +73,11 @@ Create venv::
     virtualenv-2.7 venv
     . venv/bin/activate
     python setup.py develop
+
+Running
+++++++++
+
+*Note*: There is *Makefile* which contains example commands how to run this thing
 
 Start MongoDB services::
 
@@ -88,10 +94,21 @@ Start bot instance::
 Run irssi in another terminal::
 
     irssi
-    /connect localhost:127.0.0.1
+    /connect localhost
     /join #caipirinha-test
 
 Play around.
+
+Using Makefile
+++++++++++++++++
+
+In terminal A to start IRC and bot::
+
+    make start-development-bot
+
+In terminal B to start a test user:
+
+    make irssi
 
 Unit tests
 -------------
