@@ -85,7 +85,6 @@ Start bot instance::
 
     venv/bin/caipirinha-bot development.ini
 
-
 Enter IRC irc.freenode.net
 
 Create a channel

@@ -1,0 +1,2 @@
+Caipirinha channel greet example message.
+

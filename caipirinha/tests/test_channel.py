@@ -3,9 +3,9 @@ from irc.bot import Channel
 from .base import CaipirinhaTestCase
 
 
-class TestChannelSettings(CaipirinhaTestCase):
+class TestChannelGreet(CaipirinhaTestCase):
     """
-    Test setting channel settings throught the web interface.
+    Test that we behave on channels.
     """
 
     def test_get_channel_url(self):

@@ -182,7 +182,10 @@ class CaiprinhaBot(ReadyAwareIRCBot):
         """
         nick = e.source.nick
         url = get_public_url(self.config)
-        for line in LONG_HELP.split("\n"):
+
+        help = LONG_HELP.format(self.config)
+
+        for line in help.split("\n"):
             c.notice(nick, line)
         c.notice(nick, "For more information visit %s" % url)
 
