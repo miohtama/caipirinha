@@ -85,6 +85,7 @@ class RainbowLoggingHandler(ColorizingStreamHandler):
             bold = False
 
         # Magician's hat
+        # https://www.youtube.com/watch?v=1HRa4X07jdE
         template = [
             "[",
             self.get_color("black", None, True),
@@ -103,9 +104,6 @@ class RainbowLoggingHandler(ColorizingStreamHandler):
 
         format = "".join(template)
 
-        # logging.Formatter doesn't directly accept padding formatting
-        # Make sure that the output columns stay intact by generating
-        # special logging record entries (for)
         who = [self.get_color("green"),
                getattr(record, "funcName", ""),
                "()",
@@ -137,7 +135,7 @@ class RainbowLoggingHandler(ColorizingStreamHandler):
 
     def colorize_traceback(self, formatter, record):
         """
-        Save a color codes in a traceback
+        Turn traceback text to red.
         """
         if record.exc_info:
             # Cache the traceback text to avoid converting it multiple times
@@ -152,7 +150,7 @@ class RainbowLoggingHandler(ColorizingStreamHandler):
         """
         Formats a record for output.
 
-        Takes a custom formatting path on a terminall.
+        Takes a custom formatting path on a terminal.
         """
         if self.is_tty:
             message = self.colorize(record)
