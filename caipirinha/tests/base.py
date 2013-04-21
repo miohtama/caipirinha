@@ -3,6 +3,7 @@ import time
 import subprocess
 import os
 import logging
+import sys
 
 import mongoengine
 
@@ -10,6 +11,7 @@ import caipirinha
 from caipirinha.bot.core import ReadyAwareIRCBot
 from caipirinha.bot.core import CaiprinhaBot
 from caipirinha.bot.core import log_exceptions
+from caipirinha.bot.channelmanager import ChannelManager
 
 from caipirinha.mongotestcase import TestCase as MongoTestCase
 from caipirinha.mongotestcase import MONGODB_TEST_DB_URL
@@ -21,11 +23,15 @@ IRC_TEST_CONF = {
     "irc.nick": "misshelp-dev",
     "irc.name": "Help robot Miss Caipirinha",
     "irc.port": "6667",
-    "caipirinha.public_url": "http://www.misshelp.org"
+    "caipirinha.public_url": "http://www.misshelp.org",
+    "caipirinha.channel_data_path": "caipirinha/tests/channel-test-data",
+    "caipinrina.greeting_signature": "For more information visit example.com"
 }
 
 # Launch command for ngircd
 NGIRCD = "/opt/local/sbin/ngircd -n -f %s"
+
+TEST_CHANNELS_PATH = os.path.join(os.path.dirname(sys.modules[__name__].__file__), "channel-test-data")
 
 
 class ServerThread(threading.Thread):
@@ -79,6 +85,8 @@ class BotThread(threading.Thread):
     def disconnect(self):
         self.bot.disconnect()
 
+nick_counter = 0
+
 
 class CaipirinhaTestCase(MongoTestCase):
     """
@@ -107,11 +115,18 @@ class CaipirinhaTestCase(MongoTestCase):
     def setUp(self):
         """
         """
+
+        global nick_counter
+
         MongoTestCase.setUp(self)
         self.db = mongoengine.connect("testdb", host=MONGODB_TEST_DB_URL)
 
         # An IRC user sending messages to the our bot
-        self.buddy = ReadyAwareIRCBot([("127.0.0.1", CaipirinhaTestCase.TEST_CASE_IRC_PORT)], "buddy", "Buddy'o'pal")
+
+        # Workaround to avoid nick already in use exceptions
+        nick = "buddy%d" % nick_counter
+        nick_counter += 1
+        self.buddy = ReadyAwareIRCBot([("127.0.0.1", CaipirinhaTestCase.TEST_CASE_IRC_PORT)], nick, "Buddy'o'pal")
         self.buddy_thread = BotThread(self.buddy)
         self.buddy_thread.start()
         time.sleep(0.5)
@@ -120,7 +135,7 @@ class CaipirinhaTestCase(MongoTestCase):
         # Our bot instance reacting to buddy's poking
         conf = IRC_TEST_CONF.copy()
         conf["irc.port"] = "%d" % CaipirinhaTestCase.TEST_CASE_IRC_PORT
-        self.bot = CaiprinhaBot(IRC_TEST_CONF, self.db)
+        self.bot = CaiprinhaBot(IRC_TEST_CONF, self.db, ChannelManager(TEST_CHANNELS_PATH))
         self.bot_thread = BotThread(self.bot)
         self.bot_thread.start()
 

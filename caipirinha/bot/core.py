@@ -14,6 +14,9 @@ from irc.client import ip_numstr_to_quad, ip_quad_to_numstr
 
 from caipirinha.shared import get_public_url, get_database_connection
 from caipirinha.log import RainbowLoggingHandler
+from caipirinha.utils import get_nice_config_path
+from caipirinha.utils import make_channel_spec_string
+from caipirinha.bot.channelmanager import ChannelManager
 
 
 def setup_logging():
@@ -50,6 +53,17 @@ def log_exceptions(func):
             raise
 
     return inner
+
+
+def get_network_from_server(server):
+    """ XXX: Currently only Freenode supported
+    """
+
+    # Tests map to freenode network too
+    if server in ["irc.freenode.net", "127.0.0.1", "localhost"]:
+        return "freenode"
+
+    raise RuntimeError("Cannot map server to network: %s" % server)
 
 
 class ReadyAwareIRCBot(irc.bot.SingleServerIRCBot):
@@ -98,24 +112,31 @@ class CaiprinhaBot(ReadyAwareIRCBot):
 
     MAX_CHANNELS = 100
 
-    def __init__(self, config, db):
+    def __init__(self, config, db, channel_manager):
+        """
+        :param db: MongoDB handle
+
+        :param channel_manager: Channel greet text manager instance
+        """
 
         self.db = db
         self.config = config
+        self.channel_manager = channel_manager
+
+        self.channel_greeting_info = self.channel_manager.scan()
+
+        self.greeting_signature = config["caipinrina.greeting_signature"]
 
         self.server = server = config["irc.servers"]
         port = int(config["irc.port"])
         nickname = config["irc.nick"]
         name = config["irc.name"]
-        logger.info("Connecting %s" % server)
 
+        logger.info("Connecting %s" % server)
         ReadyAwareIRCBot.__init__(self, [(server, port)], nickname, name)
 
         # Expose this event for testing
         self.hit_max_channels = False
-
-        # When we are ready to play with the server
-        self.ready = False
 
     @log_exceptions
     def on_nicknameinuse(self, c, e):
@@ -123,8 +144,17 @@ class CaiprinhaBot(ReadyAwareIRCBot):
 
     @log_exceptions
     def on_welcome(self, c, e):
+        """
+        :param c: Connection
+        """
         #c.join(self.channel)
         logger.info("Connected to %s" % self.server)
+
+        # Join all channels we have greeting message set
+        network = get_network_from_server(self.server)
+        channels = self.channel_manager.get_network_channels(self.channel_greeting_info, network)
+        for channel in channels:
+            c.join(channel)
 
     @log_exceptions
     def on_privmsg(self, c, e):
@@ -162,6 +192,11 @@ class CaiprinhaBot(ReadyAwareIRCBot):
     def on_dccmsg(self, c, e):
         c.privmsg("You said: " + e.arguments[0])
 
+    def on_join(self, c, e):
+        """ When someone else joins on the channel.
+        """
+        self.do_greeting(c, e)
+
     def on_dccchat(self, c, e):
         if len(e.arguments) != 2:
             return
@@ -184,9 +219,29 @@ class CaiprinhaBot(ReadyAwareIRCBot):
         c.notice(nick, "For help send private msg 'help'")
         c.notice(nick, "For more information visit %s" % url)
 
-    def do_help(self, c, e):
+    def do_greeting(self, c, e):
+        """ Output channel greeting if it has been set.
         """
-        Go for long help text version.
+        who = e.source
+        channel = e.target
+
+        # Don't greet ourselves
+        nick, hostmak = who.split("!")
+        if nick == self.nickname:
+            return
+
+        network = get_network_from_server(self.server)
+        spec = make_channel_spec_string(network, channel)
+
+        greeting = self.channel_greeting_info.get(spec)
+        if greeting:
+            for line in greeting.split("\n"):
+                c.notice(who, line)
+
+            c.notice(who, self.greeting_signature)
+
+    def do_help(self, c, e):
+        """ Message out for long help text version.
         """
         nick = e.source.nick
         url = get_public_url(self.config)
@@ -231,6 +286,8 @@ class CaiprinhaBot(ReadyAwareIRCBot):
         c.notice(nick, "To manage %s settings go to %s" % (channel, admin_link))
 
     def do_command(self, e, line):
+        """ Main event loop.
+        """
         nick = e.source.nick
         c = self.connection
 
@@ -294,6 +351,10 @@ def main():
     config = parse_config(config_file)
 
     db = get_database_connection(config)
+
+    channel_path = get_nice_config_path(config["caipirinha.channel_data_path"])
+    channel_manager = ChannelManager(get_nice_config_path(channel_path))
+    channel_manager.scan()
 
     bot = CaiprinhaBot(config, db)
     logger.info("Starting")

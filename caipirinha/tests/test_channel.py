@@ -1,14 +1,11 @@
-import os
 import unittest
-import sys
+import time
 
 from irc.bot import Channel
 from caipirinha.bot.channelmanager import ChannelManager
 from caipirinha.utils import make_channel_spec_string
 
-from .base import CaipirinhaTestCase
-
-TEST_CHANNELS_PATH = os.path.join(os.path.dirname(sys.modules[__name__].__file__), "channel-test-data")
+from .base import CaipirinhaTestCase, TEST_CHANNELS_PATH
 
 
 class TestChannelManager(unittest.TestCase):
@@ -21,7 +18,7 @@ class TestChannelManager(unittest.TestCase):
     def test_spec_string(self):
         """ Spec string is what it should be
         """
-        self.assertEqual("irc://freenode/#caipirinha", make_channel_spec_string("freenode", "#caipirinha"))
+        self.assertEqual("freenode!#caipirinha", make_channel_spec_string("freenode", "#caipirinha"))
 
     def test_scan(self):
         """ We scan data files correctly """
@@ -65,10 +62,12 @@ class TestChannelGreet(CaipirinhaTestCase):
         Check that we can specify the channel in the case of multiple op'ed channels.
         """
 
-        self.join_to_channel(self.bot, "#caipirinha-test")
+        # Make sure that we are joined on the channel
+        self.wait_to_happen(lambda: "#caipirinha-test" in self.bot.channels, "Bot did not join #caipirinha-test")
 
         self.buddy.connection.join("#caipirinha-test")
-        self.wait_for_private_notice_tag(self.buddy, "Caipirinha channel greet example message.", "Buddy got no greeting message")
+        # Wait for greeting signature
+        self.wait_for_private_notice_tag(self.buddy, "For more information visit example.com", "Buddy got no greeting message")
 
     def test_do_not_get_greet_messge_twice(self):
         """

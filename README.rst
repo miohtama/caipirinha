@@ -73,25 +73,23 @@ Create venv::
     . venv/bin/activate
     python setup.py develop
 
-Start system services::
+Start MongoDB services::
 
     mongod --dbpath data &
 
-Run web server::
+Start server::
 
-    pserve development.ini
+    /opt/local/sbin/ngircd -n -f caipirinha/ngircd.conf &
 
 Start bot instance::
 
     venv/bin/caipirinha-bot development.ini
 
-Enter IRC irc.freenode.net
+Run irssi in another terminal::
 
-Create a channel
-
-Invite bot::
-
-    /invite misshelp-dev #testplace
+    irssi
+    /connect localhost:127.0.0.1
+    /join #caipirinha-test
 
 Play around.
 

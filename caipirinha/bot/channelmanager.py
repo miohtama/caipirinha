@@ -6,6 +6,7 @@ import os
 import logging
 
 from caipirinha.utils import make_channel_spec_string
+from caipirinha.utils import split_channel_spec
 
 logger = logging.getLogger("caipirinha.channelmannager")
 
@@ -93,3 +94,12 @@ class ChannelManager(object):
         for spec in new_channels.keys():
             if not spec in new_channels:
                 delete_callback(spec)
+
+    def get_network_channels(self, channels, network):
+        """ Get list of a channels of certain network.
+        """
+        for spec in channels.keys():
+            network, channel = split_channel_spec(spec)
+            if network == network:
+                yield channel
+
