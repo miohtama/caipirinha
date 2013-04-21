@@ -59,6 +59,7 @@ class ReadyAwareIRCBot(irc.bot.SingleServerIRCBot):
 
     def __init__(self, server, nickname, name):
         self.ready = False
+        self.disconnected = False  # Used in testing
         irc.bot.SingleServerIRCBot.__init__(self, server, nickname, name)
 
     @log_exceptions
@@ -74,6 +75,13 @@ class ReadyAwareIRCBot(irc.bot.SingleServerIRCBot):
         Server gives MOTD
         """
         self.ready = True
+
+    @log_exceptions
+    def on_disconnect(self, c, e):
+        """
+        Server kicks you out.
+        """
+        self.disconnected = True
 
     @log_exceptions
     def on_privnotice(self, c, e):

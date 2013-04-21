@@ -1,2 +1,3 @@
 from test_auth import TestAuth
 from test_channel import TestChannelManager
+from test_channel import TestChannelGreet

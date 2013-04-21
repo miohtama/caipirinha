@@ -60,7 +60,21 @@ class TestChannelGreet(CaipirinhaTestCase):
     """ Test that we behave on channels.
     """
 
-    def test_get_channel_url(self):
+    def test_get_greet_message(self):
         """
         Check that we can specify the channel in the case of multiple op'ed channels.
         """
+
+        self.join_to_channel(self.bot, "#caipirinha-test")
+
+        self.buddy.connection.join("#caipirinha-test")
+        self.wait_for_private_notice_tag(self.buddy, "Caipirinha channel greet example message.", "Buddy got no greeting message")
+
+    def test_do_not_get_greet_messge_twice(self):
+        """
+        """
+
+    def test_do_greet_message_again_after_timeout(self):
+        """
+        """
+

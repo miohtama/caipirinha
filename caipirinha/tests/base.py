@@ -2,6 +2,7 @@ import threading
 import time
 import subprocess
 import os
+import logging
 
 import mongoengine
 
@@ -12,6 +13,8 @@ from caipirinha.bot.core import log_exceptions
 
 from caipirinha.mongotestcase import TestCase as MongoTestCase
 from caipirinha.mongotestcase import MONGODB_TEST_DB_URL
+
+logger = logging.getLogger("test")
 
 IRC_TEST_CONF = {
     "irc.servers": "localhost",
@@ -122,7 +125,10 @@ class CaipirinhaTestCase(MongoTestCase):
         self.bot_thread.start()
 
         self.wait_to_happen(lambda: self.bot.ready, "Bot did not connect")
+
+        logger.info("Waiting buddy to connect")
         self.wait_to_happen(lambda: self.buddy.ready, "Buddy did not connect")
+        logger.info("Connected")
 
     def wait_until_connected(self, bot):
         """
@@ -136,8 +142,22 @@ class CaipirinhaTestCase(MongoTestCase):
         Enforce shutdown for all components individually.
         """
         self.bot_thread.disconnect()
-
         self.buddy_thread.disconnect()
+
+        # We need to wait to avoid nickname in use errors
+        if self.bot.ready:
+            self.wait_to_happen(lambda: self.bot.disconnected, "Bot did not disconnect")
+
+        if self.buddy.ready:
+            self.wait_to_happen(lambda: self.buddy.disconnected, "Buddy did not dicconnect")
+
+    def join_to_channel(self, client, channel):
+        """ Make simulated user to join an IRC channel.
+
+        Synchronous. Return when the IRC client channel state is complete for the channel.
+        """
+        client.connection.join(channel)
+        self.wait()  # XXX: Wait here for the channel initialization, not random time
 
     def wait(self):
         """
@@ -149,8 +169,9 @@ class CaipirinhaTestCase(MongoTestCase):
         """
         Async assertation which waits a certain timeout before bailing out.
         """
+
         tick = 0.1
-        still_waiting = 5
+        still_waiting = 10
         while not func():
             time.sleep(tick)
             still_waiting -= tick
