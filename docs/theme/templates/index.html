@@ -1,16 +1,17 @@
 {% extends "base.html" %}
 {% block content_title %}GoodQuestion.io: asking questions online{% endblock %}
-{% block content %}
+
+{% block content_wrapper %}
 
 <div class="hero-unit">
-    <h1>Good question</h1>
+    <h1>Good Question</h1>
     <p>
         Interacting with online community and getting an answers for a question
     </p>
 </div>
 
 <p id="non-guided-arrival" class="lead">
-    Welcome. GoodQuestions.io guides you to ask questions in online community chats  geared towards computer related technical discussion. Please spend two minutes to read advices below.
+    Welcome. <em>Good Question</em> service guides you asking questions in online discussion geared towards solving technical matters. Please spend two minutes to read advices below.
 </p>
 
 <p id="guided-arrival" class="alert alert-success">
@@ -26,8 +27,8 @@
             <h2>Every question needs context</h2>
 
             <p>
-                Tell about why and how you are solving this issue.
-                People can relate your problems when they have more context available.
+                Tell about why you ended up dealing with the question.
+                It is easier for people tp relate your to problem when they have more context available.
             </p>
 
           <a href="#" class="btn btn-info more-info-toggle pull-right"><i class="icon icon-question-sign"></i>More info</a>
@@ -154,7 +155,7 @@
             <h2>Don't compete for attentation</h2>
 
             <p>
-                Don't ask permission to ask questions. Don't ask personal councelling or send private messages to people unless they know you. Just greet, ask your question, wait for answer and enjoy smalltalk meanwhile.
+                Don't ask permission to ask questions. Don't expect personal councelling or send private messages to people unless they know you. Greet, ask your question, wait for the answer and enjoy smalltalk meanwhile.
             </p>
 
             <a href="#" class="btn btn-info more-info-toggle pull-right"><i class="icon icon-question-sign"></i>More info</a>
@@ -166,8 +167,8 @@
 
                     <li>
                          <strong>Metaquestions are pointless.</strong>
-                         Asking permission to ask question or asking if someone knows about something does
-                         not contain any details which might raise interest towards your issue. Go directly to your point if you want to discuss a matter.
+                         Asking permission to ask question or asking if someone generally knows about a topic does
+                         not contain any details which might raise interest towards your issue. Go directly to the point of the matter you want to discuss.
                     </li>
 
 
@@ -245,4 +246,4 @@
     </div>
 </div>
 
-{% endblock content %}
+{% endblock %}

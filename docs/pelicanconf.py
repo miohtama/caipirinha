@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*- #
 
 AUTHOR = u'Mikko Ohtamaa'
-SITENAME = u'GoodQuestion.io'
+SITENAME = u'Good Question'
 SITEURL = ''
 
-TIMEZONE = 'Europe/Paris'
+TIMEZONE = 'Europe/Helsinki'
 
 DEFAULT_LANG = u'en'
 
@@ -26,7 +26,7 @@ THEME = "theme"
 DISPLAY_PAGES_ON_MENU = True
 
 # custom page generated with a jinja2 template
-TEMPLATE_PAGES = {'pages/irc.html': 'pages/irc.html'
+TEMPLATE_PAGES = {'pages/02_irc.html': 'pages/irc.html'
 }
 
 STASTIC_PATHS = ["static"]

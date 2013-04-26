@@ -41,7 +41,7 @@
                   <li><a href="{{ link }}">{{ title }}</a></li>
               {% endfor %}
               {% if DISPLAY_PAGES_ON_MENU %}
-              {% for page in PAGES %}
+              {% for page in PAGES|sort(attribute='filename') %}
                 <li><a href="{{ SITEURL }}/{{ page.url }}">{{ page.title }}</a></li>
               {% endfor %}
                           <li class="divider-vertical"></li>
@@ -64,15 +64,30 @@
 
         <div class="row-fluid">
             <div class="alert alert-error">
-                Site under construction
+                <i class="icon icon-warning"></i>Site under construction. Nothing to see here. Please move along.
             </div>
         </div>
 
-        {% block content %}
-        {% endblock %}
 
-        <footer class="row-fluid">Footer</footer>
+        {% block content_wrapper %}
+            <div class="row-fluid">
+                <div class="span9">
+                    {% block content %}
+                    {% endblock content %}
+                </div>
+
+                <div class="span3" id="sidebar">
+                    <div id="sidebar-inner" data-spy="affix" data-offset-top="-20">
+                    </div>
+                </div>
+
+            </div>
+        {% endblock content_wrapper %}
     </div>
+
+    <footer class="row-fluid footer">
+        Created by <a href="http://twitter.com/moo9000">Mikko Ohtamaa</a>.
+    </footer>
 
     <script src="//code.jquery.com/jquery-1.9.1.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>

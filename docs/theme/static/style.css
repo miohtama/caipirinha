@@ -1,6 +1,38 @@
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin: 0 0 100px; /* bottom = footer height */
+}
+
 .container-narrow {
     margin: 0 auto;
     max-width: 700px;
+}
+
+#sidebar-inner {
+    width: 169px;
+}
+
+#sidebar-inner > ul {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.067);
+}
+
+.footer {
+
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    margin-top: 20px;
+    padding-top: 19px;
+    height: 60px;
+    width: 100%;
+
+    background-color: #F5F5F5;
+    border-top: 1px solid #E5E5E5;
+    text-align: center;
 }
 
 /**
@@ -49,3 +81,13 @@
 #from-internet-with-love strong {
     color: #a33;
 }
+
+/* reST fixes */
+
+div.section h2 a,
+div.section h2 a:hover {
+    color: #333333;
+    cursor: pointer;
+    text-decoration: none;
+}
+
