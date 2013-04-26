@@ -1,6 +1,6 @@
-
+=====
 About
-------
+=====
 
 GoodQuestion.io was founded when the author was encountering community communications scalability problems.
 The site promotes best practies for online community management and guides newcomers to properly handle realtime online medias.

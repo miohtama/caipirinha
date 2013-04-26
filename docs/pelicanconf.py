@@ -26,6 +26,7 @@ THEME = "theme"
 DISPLAY_PAGES_ON_MENU = True
 
 # custom page generated with a jinja2 template
-TEMPLATE_PAGES = {'pages/irc.html': 'pages/irc.html'}
+TEMPLATE_PAGES = {'pages/irc.html': 'pages/irc.html'
+}
 
 STASTIC_PATHS = ["static"]
