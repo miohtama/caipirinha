@@ -1,9 +1,15 @@
-body {
-}
-
 .container-narrow {
     margin: 0 auto;
     max-width: 700px;
+}
+
+/**
+ * This front page note is displayed when special hash tag is present in URL.
+ *
+ * It is designed to separate users who arrive by Google and who get linked in from chat.
+ */
+#guided-arrival {
+    display: none;
 }
 
 .more-info {
@@ -26,20 +32,11 @@ body {
 /* http://stackoverflow.com/questions/13354578/custom-li-list-style-with-font-awesome-icon */
 .more-info li:before {
     content: "";
-    font-family: FontAwesome; /* or whatever */
+    font-family: FontAwesome;
     display: inline-block;
     margin-left: -1.2em; /*same as padding-left set on li*/
     width: 1.2em; /*same as padding-left set on li*/
 }​
-
-/**
- * This front page note is displayed when special hash tag is present in URL.
- *
- * It is designed to separate users who arrive by Google and who get linked in from chat.
- */
-#guided-arrival {
-    display: none;
-}
 
 #advices p {
     font-size: 120%;
