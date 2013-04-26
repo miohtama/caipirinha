@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- #
 
 AUTHOR = u'Mikko Ohtamaa'
-SITENAME = u'Internet chat questions and etique guide'
+SITENAME = u'GoodQuestion.io'
 SITEURL = ''
 
 TIMEZONE = 'Europe/Paris'

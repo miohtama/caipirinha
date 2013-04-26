@@ -6,3 +6,13 @@ body {
     max-width: 1024px;
     padding-top: 20px;
 }
+
+/**
+ * This front page note is displayed when special hash tag is present in URL.
+ *
+ * It is designed to separate users who arrive by Google and who get linked in from chat.
+ */
+#guided-arrival {
+    display: none;
+}
+
