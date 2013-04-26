@@ -3,9 +3,34 @@ body {
 }
 
 .container {
-    max-width: 1024px;
+    max-width: 800px;
     padding-top: 20px;
 }
+
+.more-info {
+    display: none;
+    margin-top: 1em;
+}
+
+.more-info-toggle .icon {
+    margin-right: 1em;
+}
+
+.more-info ul {
+    list-style-type: none;
+}
+
+.more-info li {
+    margin-bottom: 0.5em;
+}
+
+.more-info li:before {
+    content: "";
+    font-family: FontAwesome; /* or whatever */
+    display: inline-block;
+    margin-left: -1.2em; /*same as padding-left set on li*/
+    width: 1.2em; /*same as padding-left set on li*/
+}​
 
 /**
  * This front page note is displayed when special hash tag is present in URL.
@@ -16,3 +41,14 @@ body {
     display: none;
 }
 
+#advices p {
+    font-size: 120%;
+}
+
+#from-internet-with-love {
+    margin-top: 1em;
+}
+
+#from-internet-with-love strong {
+    color: #a33;
+}

@@ -1,11 +1,11 @@
 {% extends "base.html" %}
-{% block content_title %}GoodQuestion.io: asking good questions online{% endblock %}
+{% block content_title %}GoodQuestion.io: asking questions online{% endblock %}
 {% block content %}
 
 <div class="hero-unit">
     <h1>Good question</h1>
     <p>
-        How to interact with online community and receive answers to your questions
+        Interacting with online community and receive answers to your questions
     </p>
 </div>
 
@@ -15,76 +15,139 @@
     below how to make sure you get better input from the community.
 </p>
 
-<div class="row-fluid" class="advice">
-    <div class="span12">
-        <h2>Every question needs background</h2>
+<div id="advices">
 
-        <p>
-            Tell who are, what is background to your situation and what have you tried this far?
-            People can relate your problems when they have more context information available.
-        </p>
+    <div class="row-fluid" class="advice">
+        <div class="span12">
+            <h2>Participate</h2>
 
-        <a href="more-info" class="pull-right">More info</a>
-
-        <div style="clear: both"><!-- --></div>
-
-        <p class="more-info">
-            Often, if you are inexperienced in the area
-        </p>
-    </div>
-</div>
-
-
-<div class="row-fluid" class="advice">
-    <div class="span12 advice">
-        <h2>Be patient</h2>
-
-        <p>
-            Wait answer patiently, don't repeat your question.
-            People might be monitoring community chat only once in an hour.
-            Please pe prepared to spend at least this time to see if anyone can answer
-            to your question. If you don't get answers try alternative, non real-time,
-            forum.
-        </p>
-
-        <a href="more-info" class="pull-right">More info</a>
-
-        <div style="clear: both"><!-- --></div>
-
-        <p class="more-info">
-            Often, if you are inexperienced in the area
-        </p>
-    </div>
-</div>
-
-
-<div class="row-fluid" class="advice">
-    <div class="span12 advice">
-        <h2>Don't compete for attentation</h2>
-
-        <p>
-            Don't ask permission to ask questions. Don't ask personal councelling or send private messages to people unless they know you. Just greet, ask your question, wait for answer and enjoy smalltalk meanwhile.
-        </p>
-
-        <a href="#" class="pull-right">More info</a>
-
-        <div class="more-info">
             <p>
-                Even if the problem in your hand is most urgent for you, it's probably not critical for other
-                people. Extra helps, pleases and pledges won't change the factual content of your question
-                or make it easier to answer.
+                Spend time with the online community. Leave chat running on the background.
+                Learning to know people will increase mutual trust.
+            </p>
+
+            <a href="more-info" class="pull-right">More info</a>
+
+            <div style="clear: both"><!-- --></div>
+
+            <p class="more-info">
+                Often, if you are inexperienced in the area
             </p>
         </div>
     </div>
+
+
+    <div class="row-fluid" class="advice">
+        <div class="span12">
+            <h2>Every question needs background</h2>
+
+            <p>
+                Tell who are, what is background to your situation and what have you tried this far?
+                People can relate your problems when they have more context available.
+            </p>
+
+            <a href="more-info" class="pull-right">More info</a>
+
+            <div style="clear: both"><!-- --></div>
+
+            <p class="more-info">
+                Often, if you are inexperienced in the area
+            </p>
+        </div>
+    </div>
+
+
+    <div class="row-fluid" class="advice">
+        <div class="span12 advice">
+            <h2>Be patient</h2>
+
+            <p>
+                Wait for the answer patiently, don't repeat your question.
+                People might be monitoring community chat only <strong>once in an hour</strong>.
+            </p>
+
+            <a href="#" class="btn btn-info more-info-toggle pull-right"><i class="icon icon-question-sign"></i>More info</a>
+
+            <div style="clear: both"><!-- --></div>
+
+            <div class="more-info alert alert-info">
+                <ul>
+
+
+                    <li>
+                         <strong>Be prepared to wait for the answer</strong>.
+                         Have the chat open at least this an hour to see if anyone can answer to your question.
+                    </li>
+
+                    <li>
+                         <strong>People might not be online</strong>.
+                         Large number of chat participants doesn't mean that those people are at the front of the computer.
+                         Also, consider timing: weekends and evening are usually more quiet.
+                    </li>
+
+                    <li>
+                        <strong>Try alternative non-real-time forums</strong>.
+                        If you don't get any answers in chat try non-real-time forums.
+                        If you are looking for a off-the-shelf answer for a specific question try
+                        <a href="stackoverflow.com">stackoverflow.com</a> (programming) and
+                        related <a href="http://stackexchange.com/">StackExchange Q&amp;A sites</a>.
+                        Often a community also has an public mailing list or a forum where you can post your question
+                        and wait for few days for the answer.
+                    </li>
+
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="row-fluid" class="advice">
+        <div class="span12 advice">
+            <h2>Don't compete for attentation</h2>
+
+            <p>
+                Don't ask permission to ask questions. Don't ask personal councelling or send private messages to people unless they know you. Just greet, ask your question, wait for answer and enjoy smalltalk meanwhile.
+            </p>
+
+            <a href="#" class="btn btn-info more-info-toggle pull-right"><i class="icon icon-question-sign"></i>More info</a>
+
+            <div style="clear: both"><!-- --></div>
+
+            <div class="more-info alert alert-info">
+                <ul>
+
+                    <li>
+                         <strong>Metaquestions are pointless.</strong>
+                         Asking permission to ask question or asking if someone knows about something does
+                         not contain any details which might raise interest towards your issue. Go directly to your point if you want to discuss a matter.
+                    </li>
+
+
+                    <li>
+                        <strong>Your problem is not critical for other people.</strong>
+                        Extra pleases and pledges won't change the factual content of your question
+                        making it quicker for answer to other people. They only add noise to the discussion channel.
+                    </li>
+
+                    <li>
+                         <strong>If people can help you they will react to your question.</strong>
+                         Sending private messages to people or asking a personal mentoring could be considered
+                         rude.
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+
 </div>
 
-<div class="row-fluid">
+<div id="from-internet-with-love" class="row-fluid">
     <div class="span12 well lead">
         People participate online communities voluntary. It's not a help desk and they are not on payroll.
-        They do it, because they love what they do. But they are only human; they have limited knowledge and might be on bad mood for unrelated reasons. Even if you don't get answers don't let it ruin your day and try again later.
+        They do it, because they <strong>love what they do</strong>. But they are only human; they have limited knowledge andbad moods for unrelated reasons. Even if you don't get answers don't let it ruin your day. Smile and try again later.
     </div>
 </div>
-
-
 
 {% endblock content %}
