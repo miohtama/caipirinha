@@ -53,11 +53,6 @@
                     </a>
                   </li>
               {% endfor %}
-
-                          <ul class="nav pull-right">
-                                <li><a href="{{ SITEURL }}/archives.html"><i class="icon-th-list"></i>Archives</a></li>
-                          </ul>
-
             </ul>
             <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
           </div><!--/.nav-collapse -->
@@ -65,24 +60,13 @@
       </div>
     </div>
 
-    <div class="container">
-      <div class="row">
-        <div class="span9" id="content">
-            {% block content %}
-            {% endblock %}
-        </div><!--/span-->
+    <div class="container-narrow">
 
-        <div class="span2 well sidebar-nav" id="sidebar">
-            {% include 'sidebar.html' %}
-        </div><!--/.well -->
+        {% block content %}
+        {% endblock %}
 
-      </div><!--/row-->
-
-      <footer>
-        Footer
-      </footer>
-
-    </div><!--/.fluid-container-->
+        <footer class="row-fluid">Footer</footer>
+    </div>
 
     <script src="//code.jquery.com/jquery-1.9.1.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>

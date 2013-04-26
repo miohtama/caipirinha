@@ -5,9 +5,13 @@
 <div class="hero-unit">
     <h1>Good question</h1>
     <p>
-        Interacting with online community and receive answers to your questions
+        Interacting with online community and getting an answers for a question
     </p>
 </div>
+
+<p id="non-guided-arrival">
+    Welcome. GoodQuestions.io tries to help you to ask questions in online community chats. It is geared towards computer and software development related technical discussion.
+</p>
 
 <p id="guided-arrival" class="alert alert-success">
     You are most likely arrived here for community discussion.
@@ -17,42 +21,87 @@
 
 <div id="advices">
 
-    <div class="row-fluid" class="advice">
+    <div class="row-fluid advice">
         <div class="span12">
-            <h2>Participate</h2>
+            <h2>Every question needs context</h2>
 
             <p>
-                Spend time with the online community. Leave chat running on the background.
-                Learning to know people will increase mutual trust.
-            </p>
-
-            <a href="more-info" class="pull-right">More info</a>
-
-            <div style="clear: both"><!-- --></div>
-
-            <p class="more-info">
-                Often, if you are inexperienced in the area
-            </p>
-        </div>
-    </div>
-
-
-    <div class="row-fluid" class="advice">
-        <div class="span12">
-            <h2>Every question needs background</h2>
-
-            <p>
-                Tell who are, what is background to your situation and what have you tried this far?
+                Tell about why and how you are solving this issue.
                 People can relate your problems when they have more context available.
             </p>
 
-            <a href="more-info" class="pull-right">More info</a>
+          <a href="#" class="btn btn-info more-info-toggle pull-right"><i class="icon icon-question-sign"></i>More info</a>
 
             <div style="clear: both"><!-- --></div>
 
-            <p class="more-info">
-                Often, if you are inexperienced in the area
+            <div class="more-info alert alert-info">
+                <ul>
+                    <li>
+                         <strong>Who are you</strong>?
+                         People will spend more effort to help you if you tell upfront that you are inexperienced, student
+                         or doing this voluntary instead of for your work. By knowing your experience level, people
+                         don't make failed assumptions how technically deep answers you can understand.
+                    </li>
+
+                    <li>
+                         <strong>How did you end up doing this</strong>?
+                         Usually the technical problem is just an obstacle towards a greater goal.
+                         But you might have taken wrong route. Tell your larger goal and why you ended up
+                         with this problem. It might be that you have a wrong angle to the problem in the first place.
+                    </li>
+
+                    <li>
+                        <strong>What did you try this far</strong>?
+                        Tell what have you done already to try to solve the problem.
+                        With slim voluntary resources answering the question initiative in problem solving is appreciated.
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid" class="advice">
+        <div class="span12 advice">
+            <h2>Be specific</h2>
+
+            <p>
+                Use available tools to make sure you can share technical details related to your problem.
             </p>
+
+            <a href="#" class="btn btn-info more-info-toggle pull-right"><i class="icon icon-question-sign"></i>More info</a>
+
+            <div style="clear: both"><!-- --></div>
+
+            <div class="more-info alert alert-info">
+                <ul>
+
+                    <li>
+                         <strong>Have steps, commands or code</strong>.
+                         Share the source code of the problem. Make it easy for people to understand
+                         exact commands or steps how to repeat the
+                    </li>
+
+                    <li>
+                         <strong>Have logs</strong>.
+                         If your problem creates a output, to a terminal or log files,
+                         have a full excerpt to sharein a service like
+                         <a href="http://pastie.org">pastie.org</a>. Don't paste directly in the chats
+                         as this would create noise affecting people discussing other matters simultaneously.
+                    </li>
+
+                    <li>
+                        <strong>Demostrate the problem</strong>.
+                        If your problem is related to pure HTML, CSS and JavaScript it can be repeated in a browser.
+                        Put up a related test case in a collaborate debugging service like
+                        <a href="http://jsfiddle.net">jsfiddle.net</a> or <a href="http://codepen.io/pen/">CodePen</a>
+                        When people can confirm and repeat the problem in their own browser it is very easy them
+                        to help you.
+                    </li>
+
+                </ul>
+            </div>
+
         </div>
     </div>
 
@@ -72,8 +121,6 @@
 
             <div class="more-info alert alert-info">
                 <ul>
-
-
                     <li>
                          <strong>Be prepared to wait for the answer</strong>.
                          Have the chat open at least this an hour to see if anyone can answer to your question.
@@ -141,12 +188,60 @@
         </div>
     </div>
 
+
+
+    <div class="row-fluid advice">
+        <div class="span12">
+            <h2>Participate</h2>
+
+            <p>
+                Be prepared to spend time with the online community.
+                Learning to know people will increase mutual trust.
+            </p>
+
+            <a href="#" class="btn btn-info more-info-toggle pull-right"><i class="icon icon-question-sign"></i>More info</a>
+
+            <div style="clear: both"><!-- --></div>
+
+            <div class="more-info alert alert-info">
+                <ul>
+
+                    <li>
+                        <strong>Facetime matters</strong>.
+                        When people know and trust you it is easier for them to help you. They know your background,
+                        timezone, skill level, character and way to discussing and vice versa. More time you spend with the community, easier it becomes to get questions and answers.
+                    </li>
+
+                    <li>
+                        <strong>Leave chat running</strong>.
+                        The best way to participate online discussion is to use an IRC client which is connected
+                        to the chat all time and tolerant to disconnects. <a href="/irc.html">See what options you have</a>.
+                    </li>
+
+                    <li>
+                         <strong>Help others</strong>.
+                         If you only join the discussion to ask your own question, but not for helping
+                         with the problems of other people you are effectively sucking community
+                         resources making the community net loss for everybody. In long term this will <a href="/about.html#scalability">erode the community.</a>
+                    </li>
+
+                    <li>
+                         <strong>Do smalltalk</strong>.
+                         Even if the disucssion is technical and factual by the nature it helps
+                         to build a character which jokes and other comments which might
+                         cheer up people having bad time solving their issues.
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <div id="from-internet-with-love" class="row-fluid">
     <div class="span12 well lead">
-        People participate online communities voluntary. It's not a help desk and they are not on payroll.
-        They do it, because they <strong>love what they do</strong>. But they are only human; they have limited knowledge andbad moods for unrelated reasons. Even if you don't get answers don't let it ruin your day. Smile and try again later.
+        People participate online communities voluntary. They do it, because they <strong>love what they do</strong>. But they are only human; they have limited knowledge and bad moods for unrelated reasons. Make people to like
+        what they do even more by making it easy for them to help you.
     </div>
 </div>
 

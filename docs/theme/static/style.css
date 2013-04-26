@@ -1,10 +1,9 @@
 body {
-    padding-top: 40px;
 }
 
-.container {
-    max-width: 800px;
-    padding-top: 20px;
+.container-narrow {
+    margin: 0 auto;
+    max-width: 700px;
 }
 
 .more-info {
@@ -24,6 +23,7 @@ body {
     margin-bottom: 0.5em;
 }
 
+/* http://stackoverflow.com/questions/13354578/custom-li-list-style-with-font-awesome-icon */
 .more-info li:before {
     content: "";
     font-family: FontAwesome; /* or whatever */
