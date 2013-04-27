@@ -88,7 +88,19 @@ class BotThread(threading.Thread):
 nick_counter = 0
 
 
-class CaipirinhaTestCase(MongoTestCase):
+class CaipirinhaMongoTestCase(MongoTestCase):
+    """
+    Do database setup / teardown.
+    """
+
+    def setUp(self):
+        """
+        """
+        MongoTestCase.setUp(self)
+        self.db = mongoengine.connect("testdb", alias="default", host=MONGODB_TEST_DB_URL)
+
+
+class CaipirinhaTestCase(CaipirinhaMongoTestCase):
     """
     Check that the bot can join to an ongoing channel and generate auth URLs for ops.
     """
@@ -118,8 +130,7 @@ class CaipirinhaTestCase(MongoTestCase):
 
         global nick_counter
 
-        MongoTestCase.setUp(self)
-        self.db = mongoengine.connect("testdb", host=MONGODB_TEST_DB_URL)
+        super(CaipirinhaTestCase, self).setUp()
 
         # An IRC user sending messages to the our bot
 

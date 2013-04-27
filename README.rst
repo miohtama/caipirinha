@@ -72,6 +72,7 @@ Create venv::
     cd caipirinha
     virtualenv-2.7 venv
     . venv/bin/activate
+    pip install pip install https://github.com/MongoEngine/mongoengine/tarball/master  # 0.8.0+
     python setup.py develop
 
 Running

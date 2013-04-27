@@ -3,7 +3,7 @@ Contribute
 ==============
 
 If you feel the mission of high quality online communication
-and guiding people is close to your heart we are open for submission.
+and guiding people is close to your heart *Good Question* is open for submission.
 
 .. contents :: :local:
 
@@ -15,6 +15,13 @@ Ways to contribute
 * Site layout needs love
 
 * Bot needs love
+
+Issues
+------------
+
+File issues at `Github repository <https://github.com/miohtama/caipirinha>`_.
+
+Please feel free to submit `Pull Request <https://help.github.com/articles/using-pull-requests>`_ directly for text corrections and such.
 
 Grand Plan
 ------------

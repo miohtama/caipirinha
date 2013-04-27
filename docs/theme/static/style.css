@@ -35,6 +35,12 @@ body {
     text-align: center;
 }
 
+.footer a .icon,
+.footer a .icon:hover {
+    text-decoration: none;
+    margin-right: 5px;
+}
+
 /**
  * This front page note is displayed when special hash tag is present in URL.
  *
