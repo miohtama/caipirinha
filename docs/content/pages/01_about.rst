@@ -12,6 +12,7 @@ Good Question promotes best practies for online community management and guides 
 * Promote good communications practices
 
 * Provide tools for online communities to productized and automated help (e.g. IRC bot)
+  and migitate `help vampires <http://slash7.com/2006/12/22/vampires/>`_ problem
 
 * Help communities to scale up communications and make newcomers feel home
 
@@ -28,8 +29,7 @@ From `Karl Fogel <https://twitter.com/kfogel>`_: `How to Run a Successful Free S
 
 By following modern internet best practices, like Github collaboration,
 providing easy-to deploy automated tools and guidance to newcomers I believe
-we can stop the negative feedback loop and increase the quality of communication and online community happiness
-permanently.
+we can stop the negative feedback loop and increase the quality of communication and online community happiness permanently.
 
 Inspiration
 ------------
